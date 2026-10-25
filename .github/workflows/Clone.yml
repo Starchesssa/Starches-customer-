@@ -11,39 +11,39 @@ permissions:
 
 jobs:
   clone:
-    name: Copy Original Starches Repository
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout destination repository
         uses: actions/checkout@v4
-        with:
-          path: destination
 
-      - name: Checkout original Starches repository
-        uses: actions/checkout@v4
-        with:
-          repository: Starchesssa/Starches-real-
-          ref: main
-          path: source
-          persist-credentials: false
+      - name: Clone original Starches repository
+        run: |
+          git clone --depth 1 \
+            https://github.com/Starchesssa/Starches-real-.git \
+            source
 
       - name: Copy source files
         run: |
-          cp -a source/. destination/
-          rm -rf destination/.git
+          cp -a source/. .
+          rm -rf source .git
 
-      - name: Commit copied project
-        working-directory: destination
+      - name: Configure Git
         run: |
+          git init
+          git branch -M main
           git config user.name "github-actions[bot]"
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Commit and push project
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           git add -A
+          git commit -m "Import original Starches project"
 
-          if ! git diff --cached --quiet; then
-            git commit -m "Import original Starches project"
-          fi
+          git remote add origin \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-          git push origin HEAD:main
+          git push --force origin main
