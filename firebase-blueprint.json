@@ -1,0 +1,218 @@
+
+{
+  "entities": {
+    "user": {
+      "title": "UserProfile",
+      "description": "User profile containing name, email, phone, wallet balance, and delivery preferences",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique user ID matching auth UID"
+        },
+        "name": {
+          "type": "string",
+          "description": "User display name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number"
+        },
+        "walletBalance": {
+          "type": "number",
+          "description": "In-app Zad Food wallet credit balance"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when user was created"
+        }
+      },
+      "required": ["id", "name", "email"]
+    },
+    "order": {
+      "title": "Order",
+      "description": "Delivery food or grocery order placed by a customer",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User ID of the customer who placed the order"
+        },
+        "storeId": {
+          "type": "string",
+          "description": "Store ID from which the order was placed"
+        },
+        "storeName": {
+          "type": "string",
+          "description": "Store display name"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of ordered menu items with quantities and options"
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Subtotal cost of food items"
+        },
+        "deliveryFee": {
+          "type": "number",
+          "description": "Delivery fee amount"
+        },
+        "discount": {
+          "type": "number",
+          "description": "Promo discount applied"
+        },
+        "tip": {
+          "type": "number",
+          "description": "Courier tip amount"
+        },
+        "total": {
+          "type": "number",
+          "description": "Final billed total"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["placed", "preparing", "on_the_way", "delivered", "cancelled"],
+          "description": "Current lifecycle status of the delivery order"
+        },
+        "deliveryAddress": {
+          "type": "string",
+          "description": "Confirmed delivery street address"
+        },
+        "deliveryCoord": {
+          "type": "object",
+          "description": "Latitude and longitude for courier navigation"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Order placement timestamp"
+        }
+      },
+      "required": ["id", "userId", "storeId", "storeName", "items", "total", "status", "deliveryAddress"]
+    },
+    "store": {
+      "title": "Store",
+      "description": "Partner restaurant or grocery market providing items for delivery",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique store identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Store business name"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["restaurant", "grocery"],
+          "description": "Store categorization type"
+        },
+        "cuisine": {
+          "type": "array",
+          "description": "List of cuisine tags"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Customer star rating (0-5)"
+        },
+        "reviewsCount": {
+          "type": "number",
+          "description": "Number of verified reviews"
+        },
+        "deliveryTimeMin": {
+          "type": "number",
+          "description": "Minimum delivery time in minutes"
+        },
+        "deliveryTimeMax": {
+          "type": "number",
+          "description": "Maximum delivery time in minutes"
+        },
+        "deliveryFee": {
+          "type": "number",
+          "description": "Standard delivery fee in dollars"
+        },
+        "minOrder": {
+          "type": "number",
+          "description": "Minimum order value"
+        },
+        "distanceKm": {
+          "type": "number",
+          "description": "Distance from customer in kilometers"
+        },
+        "bannerColor": {
+          "type": "string",
+          "description": "Banner background color gradient"
+        },
+        "accentColor": {
+          "type": "string",
+          "description": "Primary accent brand color"
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical restaurant address"
+        },
+        "isOpen": {
+          "type": "boolean",
+          "description": "Store open/closed status"
+        },
+        "tagline": {
+          "type": "string",
+          "description": "Short marketing tagline"
+        },
+        "menu": {
+          "type": "array",
+          "description": "Catalog of available menu items"
+        }
+      },
+      "required": ["id", "name", "type", "rating", "menu"]
+    },
+    "favorite": {
+      "title": "Favorite",
+      "description": "Saved store bookmark for user quick access",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Store ID marked as favorite"
+        },
+        "storeId": {
+          "type": "string",
+          "description": "Store ID"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Bookmark timestamp"
+        }
+      },
+      "required": ["id", "storeId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "#/entities/user",
+      "description": "Private user profile, delivery addresses, and wallet balance"
+    },
+    "/orders/{orderId}": {
+      "schema": "#/entities/order",
+      "description": "Order records with real-time delivery status updates"
+    },
+    "/stores/{storeId}": {
+      "schema": "#/entities/store",
+      "description": "Public catalog of stores and food items available for delivery"
+    },
+    "/users/{userId}/favorites/{favoriteId}": {
+      "schema": "#/entities/favorite",
+      "description": "User specific bookmarked restaurants and grocery stores"
+    }
+  }
+}
