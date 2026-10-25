@@ -15,28 +15,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout new repository
+      - name: Checkout destination repository
         uses: actions/checkout@v4
+        with:
+          path: destination
 
-      - name: Clone original Starches repository
-        run: |
-          git clone --depth 1 \
-            https://github.com/Starchesssa/Starches-real-.git \
-            source
+      - name: Checkout original Starches repository
+        uses: actions/checkout@v4
+        with:
+          repository: Starchesssa/Starches-real-
+          ref: main
+          path: source
+          persist-credentials: false
 
       - name: Copy source files
         run: |
-          cp -a source/. .
-          rm -rf source .git
+          cp -a source/. destination/
+          rm -rf destination/.git
 
-      - name: Configure Git
+      - name: Commit copied project
+        working-directory: destination
         run: |
           git config user.name "github-actions[bot]"
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit and push copied files
-        run: |
           git add -A
 
           if ! git diff --cached --quiet; then
