@@ -1,0 +1,10 @@
+{
+  "name": "Zad Food - Fast Food & Grocery Delivery",
+  "description": "Material Design food and grocery delivery with Bolt Food-style instant zero-loading map, real-time courier tracking, and secure payment.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
