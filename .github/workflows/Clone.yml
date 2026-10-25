@@ -14,9 +14,17 @@ jobs:
       - name: Checkout new repository
         uses: actions/checkout@v4
 
+      - name: Check public repository access
+        run: |
+          curl -fIL --max-time 20 \
+            https://github.com/Starchesssa/Starches-real-.git
+
       - name: Clone original Starches repository
         run: |
-          git clone https://github.com/Starchesssa/Starches-real-.git source
+          git -c credential.helper= clone \
+            --depth 1 \
+            https://github.com/Starchesssa/Starches-real-.git \
+            source
 
       - name: Copy source files
         run: |
@@ -27,6 +35,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add -A
-          git diff --cached --quiet || git commit -m "Import original Starches project"
-          git push
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Import original Starches project"
+          fi
+
+          git push origin HEAD
