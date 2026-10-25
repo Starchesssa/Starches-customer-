@@ -1,4 +1,4 @@
-name: Clone Starches Source
+concurrency: name: Clone Starches Source
 
 on:
   workflow_dispatch:
@@ -14,15 +14,9 @@ jobs:
       - name: Checkout new repository
         uses: actions/checkout@v4
 
-      - name: Check public repository access
-        run: |
-          curl -fIL --max-time 20 \
-            https://github.com/Starchesssa/Starches-real-.git
-
       - name: Clone original Starches repository
         run: |
-          git -c credential.helper= clone \
-            --depth 1 \
+          git clone --depth 1 \
             https://github.com/Starchesssa/Starches-real-.git \
             source
 
